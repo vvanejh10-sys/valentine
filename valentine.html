@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine?</title>
+
+<style>
+body {
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(#ffd6e7,#fff);
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+img {
+  width: 200px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.2);
+}
+
+.buttons {
+  position: relative;
+  width: 300px;
+  height: 180px;
+}
+
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#yes {
+  background: #ff4d6d;
+  color: white;
+}
+
+#no {
+  background: #999;
+  color: white;
+  position: absolute;
+  left: 160px;
+  transition: left .35s ease, top .35s ease;
+}
+
+#message {
+  display:none;
+  font-size: 22px;
+  margin-top: 15px;
+  color:#ff2f68;
+  text-align:center;
+}
+
+/* HEARTS */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  animation: floatUp 5s linear forwards;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
+
+/* CONFETTI */
+.confetti {
+  position: fixed;
+  top: -10px;
+  width: 8px;
+  height: 14px;
+  animation: fall 4s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="startScreen" style="
+position:fixed;
+inset:0;
+background:#ffd6e7;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+font-size:24px;
+z-index:999;">
+💖 Tap anywhere to start the surprise 💖
+</div>
+
+
+<audio id="music" loop>
+  <source src="./music.mp3" type="audio/mpeg">
+</audio>
+
+<h1 id="title">💖 Will you be my Valentine? 💖</h1>
+
+<img src="./us.jpg">
+
+<div class="buttons">
+  <button id="yes" onclick="firstYes()">Yes</button>
+  <button id="no">No</button>
+</div>
+
+<div id="message"></div>
+
+<script>
+
+const startScreen=document.getElementById("startScreen");
+
+startScreen.addEventListener("click",()=>{
+  music.play();
+  startScreen.style.display="none";
+});
+
+const noBtn = document.getElementById("no");
+const box = document.querySelector(".buttons");
+const music = document.getElementById("music");
+const msg = document.getElementById("message");
+const title = document.getElementById("title");
+
+let stage = 0;
+
+// SMOOTH RUNNING NO
+noBtn.addEventListener("mouseenter", ()=>{
+  const maxX = box.clientWidth - noBtn.offsetWidth;
+  const maxY = box.clientHeight - noBtn.offsetHeight;
+  noBtn.style.left = Math.random()*maxX+"px";
+  noBtn.style.top = Math.random()*maxY+"px";
+});
+
+// FIRST YES = FAKE STEP
+function firstYes(){
+  if(stage===0){
+    title.innerHTML="😳 Are you sure?";
+    msg.style.display="block";
+    msg.innerHTML="Think carefully… once you click again, wala nang atrasan 😏";
+    stage=1;
+    return;
+  }
+  finalYes();
+}
+
+// FINAL YES
+function finalYes(){
+  document.querySelector(".buttons").style.display="none";
+  msg.innerHTML = `
+  💕 Yay!! Thank you for choosing me.<br><br>
+  From this day on, ikaw na ang favorite notification ko.<br>
+  I promise to care for you, support you, and make you smile.<br><br>
+  Happy Valentine’s, Denise! 💖
+  `;
+  music.play();
+  startHearts();
+  startConfetti();
+}
+
+// HEARTS
+function startHearts(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=(15+Math.random()*25)+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },300);
+}
+
+// CONFETTI
+function startConfetti(){
+  for(let i=0;i<80;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},100%,70%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+document.body.addEventListener("click",()=>music.play());
+</script>
+
+</body>
+</html>
